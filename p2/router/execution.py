@@ -1,16 +1,10 @@
 from fastapi import APIRouter, BackgroundTasks
-from asyncio import sleep
 
 from p2.schema import execution
+from p2.provider import execution as provider
 
 
 router = APIRouter()
-
-
-async def f(payload: dict):
-    print(payload)
-    await sleep(10)
-    print("im done")
 
 
 @router.post("/executions/executeBlueprint",
@@ -18,5 +12,5 @@ async def f(payload: dict):
              tags=["Execution"])
 async def create_execution(exec: execution.CreateBlueprintExecution,
                            bg_task: BackgroundTasks):
-    bg_task.add_task(f, exec)
+    bg_task.add_task(provider.create_execution, exec)
     return {"msg": "All good"}
