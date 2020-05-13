@@ -1,5 +1,6 @@
 from aio_pika.patterns import RPC
 
+from p2.graph import adapters
 from p2.rpc import get_connection
 from p2.schema import execution
 
@@ -12,4 +13,5 @@ async def create_execution(exec: execution.CreateBlueprintExecution):
 
     bp = await rpc.proxy.get_blueprint(bp_id=exec.blueprint_id)
 
-    print(bp)
+    bp_adapter = bp_adapter.BlueprintAdapter(bp)
+    bp_adapter.vis()
