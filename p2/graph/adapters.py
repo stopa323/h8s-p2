@@ -24,7 +24,7 @@ class BlueprintAdapter(object):
         for p in node_ports:
             if p["kind"] == "exec":
                 continue
-            ports[p["id"]] = {"name": p["name"], "value": p["value"]}
+            ports[p["id"]] = {"name": p["name"], "value": p.get("value", "@link")}
         return ports
 
     def parse_links(self):
@@ -32,7 +32,8 @@ class BlueprintAdapter(object):
             u_node_id = link["source"]["nodeId"]
             v_node_id = link["sink"]["nodeId"]
             self.graph.add_edge(u_node_id, v_node_id, type=link["type"],
-                                id=link["id"])
+                                uport=link["source"]["portId"],
+                                vport=link["sink"]["portId"])
 
     def build_graph(self):
         try:

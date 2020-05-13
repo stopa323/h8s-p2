@@ -67,3 +67,9 @@ class Execution(object):
                 section_idx += 1
             else:
                 self.action_path.nodes(data=True)[section_idx]["nids"].append(nid)
+
+    def evaluate_link_value(self, nid, pid):
+        for pred_id, edges in self.core_graph.pred[nid].items():
+            for eid, e_attrs in edges.items():
+                if e_attrs["vport"] == pid:
+                    return f"@{pred_id}"

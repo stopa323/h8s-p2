@@ -77,8 +77,7 @@ class ParsingTestCase(unittest.TestCase):
                          {"id": "port-8",
                           "name": "VPC",
                           "kind": "object",
-                          "mandatory": True,
-                          "value": {"linkId": "link-1"}},
+                          "mandatory": True},
                          {"id": "port-9",
                           "name": "CIDR",
                           "kind": "string",
@@ -127,7 +126,7 @@ class ParsingTestCase(unittest.TestCase):
 
         execution.build_action_path()
 
-        print(1)
+        print(execution.evaluate_link_value("node-3", "port-8"))
         # execution.build_action_graph()
         # painter = drawing.GraphPainter(adapter.graph)
         # painter.draw()
