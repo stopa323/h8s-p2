@@ -1,3 +1,4 @@
 aio-pika==6.6.0
 fastapi[all]==0.46.0
 networkx==2.4
+prefect==0.10.7

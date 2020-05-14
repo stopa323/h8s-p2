@@ -128,7 +128,8 @@ class ParsingTestCase(unittest.TestCase):
 
         execution.render_actions()
 
-
+        execution.build_flow()
+        execution.flow.run()
         print("DUPA_GUARD")
         # execution.build_action_graph()
         # painter = drawing.GraphPainter(adapter.graph)

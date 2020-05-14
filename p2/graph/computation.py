@@ -1,6 +1,21 @@
 import networkx as nx
 
+from prefect import Flow, Task
 from typing import Tuple
+
+
+class CoreTask(Task):
+
+    def run(self, data):
+        print(data)
+        return
+
+
+class TerraformTask(Task):
+
+    def run(self, data):
+        print(data)
+        return
 
 
 class ExecutionPath(nx.DiGraph):
@@ -37,6 +52,7 @@ class Execution(object):
         self.exec_path = ExecutionPath(name="ExecutionPath")
         self.action_path = nx.DiGraph(name="ActionPath")
         self.actions = list()
+        self.flow = None
 
     def build_exec_path(self):
         exec_edges = self.filter_edges_by_attr(self.core_graph.edges(data=True),
@@ -84,6 +100,19 @@ class Execution(object):
                              "values": self.get_node_values(nid, node["ports"])})
             action["data"] = data
             self.actions.append(action)
+
+    def build_flow(self):
+        self.flow = Flow("First flow ever!")
+        upstream = []
+        for action in self.actions:
+            if action["automoton"] == "_CORE":
+                task = CoreTask()
+            else:
+                task = TerraformTask()
+
+            task.set_dependencies(flow=self.flow, upstream_tasks=upstream,
+                                  keyword_tasks={"data": action})
+            upstream = [task]
 
     def get_node_values(self, nid: str, ports: dict) -> dict:
         values = dict()
