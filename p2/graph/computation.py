@@ -36,6 +36,7 @@ class Execution(object):
 
         self.exec_path = ExecutionPath(name="ExecutionPath")
         self.action_path = nx.DiGraph(name="ActionPath")
+        self.actions = list()
 
     def build_exec_path(self):
         exec_edges = self.filter_edges_by_attr(self.core_graph.edges(data=True),
@@ -68,7 +69,34 @@ class Execution(object):
             else:
                 self.action_path.nodes(data=True)[section_idx]["nids"].append(nid)
 
-    def evaluate_link_value(self, nid, pid):
+    def render_actions(self):
+        for section_nid in nx.topological_sort(self.action_path):
+            section = self.action_path.nodes[section_nid]
+
+            if not section:
+                continue
+
+            action = {"automoton": section["automoton"]}
+            data = list()
+            for nid in section["nids"]:
+                node = self.core_graph.nodes(data=True)[nid]
+                data.append({"id": nid, "kind": node["kind"],
+                             "values": self.get_node_values(nid, node["ports"])})
+            action["data"] = data
+            self.actions.append(action)
+
+    def get_node_values(self, nid: str, ports: dict) -> dict:
+        values = dict()
+        for pid, attrs in ports.items():
+            field_name = attrs["name"]
+            value = self.get_value_from_link(nid, pid) \
+                if "@link" == attrs["value"] \
+                else attrs["value"]
+            values[field_name] = value
+
+        return values
+
+    def get_value_from_link(self, nid, pid):
         for pred_id, edges in self.core_graph.pred[nid].items():
             for eid, e_attrs in edges.items():
                 if e_attrs["vport"] == pid:

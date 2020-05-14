@@ -126,7 +126,10 @@ class ParsingTestCase(unittest.TestCase):
 
         execution.build_action_path()
 
-        print(execution.evaluate_link_value("node-3", "port-8"))
+        execution.render_actions()
+
+
+        print("DUPA_GUARD")
         # execution.build_action_graph()
         # painter = drawing.GraphPainter(adapter.graph)
         # painter.draw()
